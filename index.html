@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>시작하기</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+
+
+<div id="app">
+    <p>
+        <span v-bind:title="tip">{{ message }}</span><br/>
+        <label>message : <input v-model="message"></label>
+    </p>
+    <p >
+        <button v-on:click="toggle">toggle</button>
+        <span v-if="seen">이제 나를 볼 수 있어요</span>
+        <span v-if="!seen">부끄러워요</span>
+    </p>
+    <p>
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
+    </p>
+</div>
+
+<div id="app-3">
+
+</div>
+
+
+<script>
+    // vue template 아래에 script가 위치해야한다
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: '안녕하세요 Vue!',
+            tip: '이 페이지는 ' + new Date() + ' 에 로드 되었습니다. head title은 vue로 못바꾸네요',
+            seen: true,
+            todos: [
+                { text: 'JavaScript 배우기' },
+                { text: 'Vue 배우기' },
+                { text: '무언가 멋진 것을 만들기' }
+            ],
+            title: "시작하기"
+        },
+        methods: {
+            toggle: function() {
+                this.seen = !this.seen;
+            }
+        }
+    });
+
+</script>
+
+
+
+</body>
+</html>
