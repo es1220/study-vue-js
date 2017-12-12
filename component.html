@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>컴포넌트</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+<div id="comp">
+    <todo-item-static></todo-item-static>
+</div>
+
+<div id="app-7">
+    <ol>
+        <!--
+          이제 각 todo-item 에 todo 객체를 제공합니다.
+          화면에 나오므로, 각 항목의 컨텐츠는 동적으로 바뀔 수 있습니다.
+          또한 각 구성 요소에 "키"를 제공해야합니다 (나중에 설명 됨).
+         -->
+        <todo-item
+                v-for="item in groceryList"
+                v-bind:todo="item"
+                v-bind:key="item.id"
+            >
+        </todo-item>
+    </ol>
+</div>
+<script src="comp/todo-item.js"></script>
+<script>
+    // component는 vue 영역으로 지정된 곳(객체생성)에서만 동작한다.
+    var comp = new Vue({
+        el: '#comp'
+    });
+
+
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{todo.id}} {{todo.text}}</li>'
+    });
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            groceryList: [
+                { id: 0, text: 'Vegetables' },
+                { id: 1, text: 'Cheese' },
+                { id: 2, text: 'Whatever else humans are supposed to eat' }
+            ]
+        }
+    })
+
+</script>
+</body>
+</html>
