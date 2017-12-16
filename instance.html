@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>인스턴스</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+<div id="example">
+
+</div>
+<script>
+    var data = {a: 1};
+
+    // 반응형(값변경시 렌더링 수행) 속성이 필요할경우 인스턴스 생성시 초기화를 수행해두어야 함.
+    // hook (created, mounted, updated, destroyed)은 `()=>{}` 함수 사용 불가 (부모 context에 바인딩 됨)
+    // vm.$watch('a', nV => this.myMethod()) : this는 Vue 인스턴스가 아니며 this.a 또는 this.myMethod는 정의되지 않음
+    var vm = new Vue({
+        el : '#example',
+        data: data // 인스턴스가 생성될 때 있었다면 반응형임 (데이터 변경시 다시 렌더링). data객체에 있는 모든 속성을 proxy 처리함
+        // lifecycle - https://kr.vuejs.org/v2/guide/instance.html#라이프사이클-다이어그램
+        // hook - https://kr.vuejs.org/v2/api/#옵션-라이프사이클-훅
+        , beforeCreated: function() {console.log('beforeCreated hook : 인스턴스가 방금 초기화 된 후 데이터 관찰 및 이벤트 / 감시자 설정 전에 동기적으로 호출 됩니다.')}
+        , created: function() { console.log('created hook : 인스턴스가 작성된 후 동기적으로 호출됩니다. 이 단계에서 인스턴스는 데이터 처리, 계산된 속성, 메서드, 감시/이벤트 콜백 등과 같은 옵션 처리를 완료합니다. 그러나 마운트가 시작되지 않았으므로 $el 속성을 아직 사용할 수 없습니다.')}
+        , beforeMount: function() {console.log('beforeMount hook : 마운트가 시작되기 바로 전에 호출됩니다. render 함수가 처음으로 호출 됩니다. \n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')}
+        , mounted: function() { console.log('mounted hook : el이 새로 생성된 vm.$el로 대체된 인스턴스가 마운트 된 직후 호출됩니다. 루트 인스턴스가 문서 내의 엘리먼트에 마운트 되어 있으면, mounted가 호출 될 때 vm.$el도 문서 안에 있게 됩니다.' +
+            'mounted는 모든 자식 컴포넌트가 마운트 된 상태를 보장하지 않습니다. mounted 내부에서 vm.$nextTick를 사용하면 전체가 렌더링된 상태를 보장합니다. \n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다');
+            this.$nextTick(function() { console.log('mounted -> nextTick hook : 모든 화면이 렌더링 된 후 실행')})
+        }
+        , beforeUpdate : function() {console.log('beforeUpdate hook : 데이터가 변경되면, 가상 DOM 재 렌더링과 패치가 이뤄지기 전에 호출됩니다.\n' +
+            '이 훅에서 더 많은 상태 변경을 수행할 수 있으며 추가로 재 렌더링을 트리거하지 않습니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')
+        }
+        , updated: function() { console.log('updated hook : 데이터가 변경되어 가상 DOM이 재 렌더링되고 패치되면 호출됩니다.\n' +
+            '이 훅이 호출되면 엘리먼트의 DOM이 업데이트 된 상태가 되어 이 훅에서 DOM 종속적인 연산을 할 수 있습니다. 그러나 대부분의 경우 무한루프가 발생할 수 있으므로 훅에서 상태를 변경하면 안됩니다. 상태 변화에 반응하기 위해서 계산된 속성 또는 [감시자(#watch)를 사용하는 것이 더 좋습니다.\n' +
+            'updated는 모든 자식 컴포넌트가 재-렌더링 된 상태를 보장하지 않습니다. updated 내부에서 vm.$nextTick를 사용하면 전체가 업데이트된 상태를 보장합니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다');
+            this.$nextTick(function() { console.log('updated -> nextTick hook : 모든 화면이 렌더링 된 후 실행(전체가 업데이트된 상태를 보장)')})
+        }
+        , activated: function() { console.log('activated hook : keep-alive 인 컴포넌트가 활성화 될 때 호출됩니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')
+        }
+        , deactivated: function() { console.log('deactivated hook : keep-alive인 컴포넌트가 비활성화 될 때 호출됩니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')
+        }
+        , beforeDestroy : function() {console.log('beforeDestroy hook : Vue 인스턴스가 제거되기 전에 호출됩니다. 이 단계에서 인스턴스는 아직 완벽하게 작동합니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')
+        }
+        , destroyed: function() { console.log('Vue 인스턴스가 제거된 후 호출됩니다. 이 훅이 호출되면 Vue 인스턴스의 모든 디렉티브가 바인딩 해제 되고 모든 이벤트 리스너가 제거되며 모든 하위 Vue 인스턴스도 삭제됩니다.\n' +
+            '이 훅은 서버측 렌더링 중 호출되지 않습니다')
+        }
+        , errorCaptured: function(err, vm, info) {
+            // 기본적으로 모든 오류는 정의된 경우 config.errorHandler로 보내지므로 분석 서비스 한 곳에 계속 보고 가능
+            // 여러개의 errorCaptured hook이 컴포넌트의 상속 체인이나 부모 체인에 존재하면 모두 동일한 에러로 호출됨
+            // errorCaptured hook에서 에러를 throw 하면 이 에러와 원래 캡쳐된 에러 모두가 글로벌 config.errorHandler로 보내짐
+
+            return false; // 에러를 더이상 전파하지 않음 (오류가 처리되었으므로 무시해야함을 의미. errorCaptured 혹은 config.errorHandler가 이 에러를 위래 호출되지 않도록 함)
+        }
+    });
+
+    {
+        vm.a === data.a
+
+        vm.a = 2
+        data.a === 2
+
+        data.a = 3
+        vm.a === 3
+    }
+
+    vm.b = 'hi' // 인스턴스 생성시 없던 속성을 추가. 화면 렌더링 발생하지 않음
+
+    // $ 접두어는 Vue의 속성
+    {
+        vm.$data === data
+        vm.$el === document.getElementById('example');
+        vm.$watch('b', function(newVal, oldVal) {
+            // vm.b가 변경되면 호출됩니다 (단, instance 생성시 존재하지 않은 속성은 watch를 걸어도 동작하지 않음)
+            alert('change b : ' + oldVal + " -> " + newVal);
+        });
+        vm.b = 'hi?'
+
+    }
+
+</script>
+</body>
+</html>

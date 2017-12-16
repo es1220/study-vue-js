@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>템플릿 문법</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+
+<h2> 보간법 (Interpolation) </h2>
+<!-- {{ property }} : Vue instance의 data 객체의  msg 속성값 출력. msg 값 변경시마다 갱신됨 -->
+<span> 메시지 : {{msg}}</span>
+<span v-once> 메시지 v-once (다시 변경하지 않는다) : {{msg}}</span>
+
+<!-- 이중 중괄호(mustaches, {{}})를 HTML이 아닌 일반 텍스트로 해석함. 실제 HTML을 출력하려면 v-html을 사용해야함
+     HTML로 해석되는 rawHtml 속성의 값으로 대체되며, 데이터 바인딩은 무시됨
+-->
+<div v-html="rawHtml"></div>
+
+<!-- mustaches는 HTML 속성으로 사용할 수 없으며 대신 v-bind 디렉티브를 사용해야함-->
+<div v-bind:id="dynamicId"></div>
+
+<!-- Boolean 속성에 대해서도 작동하며 조건이 거짓 값이면 속성이 제거됨 -->
+<button v-bind:disabled=""isButtonDisabled></button>
+
+<!-- Vue.js는 모든 데이터 바인딩 내에서 Javascript 표현식의 모든 기능 지원 -->
+<div>
+    <!--  아래는 구문임. 표현식이 아님. 템플릿 표현식은 Math, Date 같은 전역으로 사용가능한 것에만 접근 가능 -->
+    {{ var number = 0 }} <br/>
+    {{number + 1}} <br/>
+    <!-- 각 바인딩에 하나의 단일 표현식만 포함될 수 있으므로 if 조건문은 작동하지 않음. 삼항 연산자로 표현해야함. -->
+    <!-- {{if (ok} {return message} -->
+    {{ok ? 'YES' : 'NO'}} <br/>
+    {{message.split(''}.reverse().join('')}} <br/>
+    <div v-bind:id="'list-' + id"></div>
+</div>
+<hr/>
+
+<h2> 디렉티브 </h2>
+<li>v- 접두사가 있는 특수 속성. 속성값은 단일 Javascript 표현식 (단 v-for 예외)</li>
+<li>v-if : 속성값에 따라 엘리먼트를 제거 또는 삽입</li>
+<li>v-bind(:) : 전달인자(예 - `:href`)를 사용하여 반응적으로 해당 속성 갱신</li>
+<li>v-on(@) : DOM 이벤트를 수신. 전달인자는 이벤트를 받을 이름.</li>
+
+<div>
+    <!-- seen의 true, false에 따라 엘리먼트를 제거 또는 삽입 -->
+    <p v-if="seen">이제 나를 볼 수 있어요</p>
+    <!-- href 속성을 표현식 url 값에 바인드 -->
+    <a v-bind:href="url">...</a>
+    <a :href="url">...</a>
+    <!-- v-on:click - click 이벤트를 doSomething에 전파  -->
+    <a v-on:click="doSomething">...</a>
+    <a @click="doSomething">...</a>
+    <!-- 특수접미사 : .으로 표시되며 특별한 방법으로 바인딩. -->
+    <!-- .prevent : 트리거된 이벤트에서 event.preventDefault()를 호출하도록 v-on 디렉티브에 알려줌. -->
+    <form v-on:submit.prevent="onSubmit">...</form>
+</div>
+
+</body>
+</html>
