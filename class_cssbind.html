@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>클래스와 스타일 바인딩</title>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        .static {border: 2px solid yellow}
+        .active {background: black; color: white}
+        .text-danger {color:red}
+    </style>
+</head>
+<body>
+<div id="bind">
+    <p>
+        dynamic bind
+        <li><button v-on:click="toggle_active">toggle</button>active : {{isActive}}</li>
+        <li><button v-on:click="toggle_danger">toggle</button>danger : {{isDanger}}</li>
+    </p>
+    <!-- v-bind:class 사용시 2번째 class부터는 class명을 quote(')로 감싸주어야 한다.그렇지 않으면 template compile error 발생 -->
+    <div class="static" v-bind:class="{ 'active': isActive, 'text-danger': isDanger }"> Dynamic Class Bind </div>
+    <div class="static" v-bind:class="classObject">classObject</div>
+    <div class="static" v-bind:class="[isActive ? activeClass : '', errorClass]">class array</div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#bind',
+        data: {
+            isActive: true,
+            isDanger: false,
+            error: null,
+            activeClass: 'active',
+            errorClass: 'text-danger'
+        },
+        methods: {
+            toggle_active: function() {this.isActive = !this.isActive},
+            toggle_danger: function() {this.isDanger = !this.isDanger}
+        },
+        computed: {
+            classObject: function () {
+                return {
+                    'active': this.isActive && !this.error,
+                    'text-danger': this.error && this.error.type === 'fatal'
+                }
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
